@@ -46,6 +46,53 @@ HAL is designed around a few core surfaces:
 | Local services | Self-hosted model gateways, automation services, and household integrations |
 | Guardrails | Explicit boundaries for privacy, memory, mutation, and external communication |
 
+The two diagrams below show the split: the runtime (the product) and the build orchestration (the machine that builds it).
+
+### Runtime: voice in, local inference, safe action out
+
+```mermaid
+graph LR
+    subgraph Surfaces
+        V[Voice<br/>Home Assistant]
+        D[Discord]
+        T[Telegram]
+        Term[Terminal]
+    end
+
+    V -->|OpenAI-compatible request| ADP
+
+    subgraph Server["Server · Linux NUC"]
+        ADP[hal-voice-adapter :4003<br/>ingress · tool schema<br/>safety · HA mutation boundary]
+        LLM[LiteLLM :4000<br/>model gateway]
+        ADP --> LLM
+    end
+
+    subgraph Mac["MacBook Pro M1 Max"]
+        OLL[Ollama<br/>local model]
+    end
+
+    LLM --> OLL
+    ADP -.executes tools.-> HASS[Home Assistant<br/>lights · locks · climate]
+
+    D --> HER[Hermes CLI agent]
+    T --> HER
+    Term --> HER
+```
+
+### Build: four AI agents coordinated through a GitHub state machine
+
+```mermaid
+graph TD
+    Start[ChatGPT / Michael<br/>launch conversation] --> Issue[Structured GitHub<br/>sprint issue]
+    Issue -->|lane:cowork| Cowork[Cowork<br/>architect · plan · review]
+    Cowork -->|posts result · flips label| Router{Next lane?}
+    Router -->|lane:code| Code[Claude Code<br/>headless executor]
+    Router -->|lane:codex| Codex[Codex<br/>audit / review]
+    Code -->|posts result · flips label| Router
+    Codex -->|posts result · flips label| Router
+    Router -->|sprint:complete · paused · blocked| Done[Discord notification<br/>final state]
+```
+
 ## Design principles
 
 - Local-first where practical
@@ -97,7 +144,11 @@ Excluded from this public version:
 | `docs/security-guardrails.md` | Safety, privacy, and approval boundaries |
 | `docs/roadmap.md` | Public roadmap and staged build plan |
 | `docs/portfolio-notes.md` | Notes on what this public copy represents |
+| `docs/selected-engineering-decisions.md` | The strongest decisions + the safety subsystem, for a quick read |
+| `docs/case-study-orchestrator.md` | Why the build system moved off GUI automation |
+| `decisions/` | Full Architecture Decision Record set (ADR-001 … ADR-008) |
+| `machines/server/hal-voice-adapter/confirm/` | The confirm-before-mutate safety subsystem (code + tests) |
 
 ## License
 
-All rights reserved unless a separate license is added later.
+Source-available for review and portfolio purposes. All rights reserved. Not licensed for reuse or redistribution.
