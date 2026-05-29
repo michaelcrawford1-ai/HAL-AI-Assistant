@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HAL AI Assistant — Executive Review Roadmap</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #172033;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --line: #2f3b52;
+      --accent: #38bdf8;
+      --accent-2: #a78bfa;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --risk: #fb7185;
+      --paper: #f8fafc;
+      --paper-text: #111827;
+      --paper-muted: #4b5563;
+      --paper-line: #d1d5db;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.20), transparent 32rem),
+        radial-gradient(circle at 80% 10%, rgba(167, 139, 250, 0.16), transparent 28rem),
+        linear-gradient(180deg, #0f172a 0%, #111827 100%);
+      line-height: 1.55;
+    }
+
+    a { color: var(--accent); }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 22px 64px;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 26px;
+    }
+
+    .hero-card, .card {
+      background: rgba(17, 24, 39, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card { padding: 34px; }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.76rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 6vw, 4.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      letter-spacing: -0.025em;
+    }
+
+    h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    p { margin: 0 0 12px; }
+    .muted { color: var(--muted); }
+
+    .hero-summary {
+      font-size: 1.08rem;
+      color: #cbd5e1;
+      max-width: 76ch;
+    }
+
+    .principle {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border-radius: 12px;
+      font-weight: 650;
+    }
+
+    .scorecard {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .score {
+      padding: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .score .label { color: var(--muted); font-size: 0.82rem; }
+    .score .value { font-size: 1.55rem; font-weight: 800; margin-top: 2px; }
+    .value.good { color: var(--good); }
+    .value.warn { color: var(--warn); }
+    .value.info { color: var(--accent); }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin-bottom: 26px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: rgba(15, 23, 42, 0.84);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+    }
+
+    nav.toc a, .filter button {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      background: rgba(17, 24, 39, 0.74);
+    }
+
+    nav.toc a:hover, .filter button:hover, .filter button.active {
+      border-color: var(--accent);
+      color: white;
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    section { margin: 28px 0; }
+    .grid { display: grid; gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card { padding: 22px; }
+    .card.compact { padding: 18px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      color: #dbeafe;
+      background: rgba(37, 99, 235, 0.16);
+      margin: 2px 4px 6px 0;
+    }
+
+    .pill.good { color: #bbf7d0; background: rgba(16, 185, 129, 0.14); }
+    .pill.warn { color: #fde68a; background: rgba(245, 158, 11, 0.14); }
+    .pill.risk { color: #fecdd3; background: rgba(244, 63, 94, 0.14); }
+    .pill.info { color: #bae6fd; background: rgba(14, 165, 233, 0.14); }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .phase {
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(17, 24, 39, 0.76);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .phase-header {
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 116px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .phase-num {
+      color: white;
+      font-weight: 900;
+      text-align: center;
+      border-radius: 14px;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(167, 139, 250, 0.26));
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .phase-body {
+      display: none;
+      padding: 0 18px 20px 150px;
+      color: #cbd5e1;
+    }
+
+    .phase.open .phase-body { display: block; }
+    .chev { color: var(--muted); font-weight: 800; }
+    .phase.open .chev { transform: rotate(90deg); }
+
+    .detail-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .detail-list div {
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.62);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 12px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      vertical-align: top;
+    }
+    th { color: #bfdbfe; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .callout {
+      border-left: 4px solid var(--warn);
+      background: rgba(251, 191, 36, 0.10);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: #fde68a;
+    }
+
+    .callout.safe {
+      border-left-color: var(--good);
+      color: #bbf7d0;
+      background: rgba(52, 211, 153, 0.10);
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+    .mini {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 860px) {
+      header.hero, .grid.two, .grid.three, .detail-list { grid-template-columns: 1fr; }
+      .phase-header { grid-template-columns: 1fr auto; }
+      .phase-num { text-align: left; }
+      .phase-body { padding: 0 18px 18px; }
+      nav.toc { border-radius: 18px; }
+    }
+
+    @media print {
+      body { background: white; color: var(--paper-text); }
+      .hero-card, .card, .phase, .scorecard { background: white; color: var(--paper-text); box-shadow: none; border-color: var(--paper-line); }
+      .muted, .mini { color: var(--paper-muted); }
+      nav.toc, .filter { display: none; }
+      .phase-body { display: block !important; padding-left: 18px; }
+      a { color: var(--paper-text); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Portfolio Artifact · Executive Review</div>
+        <h1>HAL AI Assistant Roadmap</h1>
+        <p class="hero-summary">A sanitized executive roadmap for a local-first AI assistant and multi-agent build system. It summarizes product direction, orchestration design, safety controls, delivery phases, and future investment areas without exposing private runtime details.</p>
+        <div class="principle">HAL is the product. The orchestrator is the build machine.</div>
+      </div>
+      <aside class="scorecard hero-card">
+        <div class="score"><div class="label">Portfolio framing</div><div class="value info">Public-safe</div></div>
+        <div class="score"><div class="label">Architecture posture</div><div class="value good">Local-first</div></div>
+        <div class="score"><div class="label">Autonomy posture</div><div class="value warn">Human-gated</div></div>
+        <div class="score"><div class="label">Primary risk</div><div class="value warn">Scope drift</div></div>
+      </aside>
+    </header>
+
+    <nav class="toc" aria-label="Page sections">
+      <a href="#summary">Summary</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#orchestration">Orchestration</a>
+      <a href="#guardrails">Guardrails</a>
+      <a href="#risks">Risks</a>
+      <a href="#portfolio">Portfolio Value</a>
+    </nav>
+
+    <section id="summary" class="grid two">
+      <div class="card">
+        <h2>Executive Summary</h2>
+        <p>HAL combines a personal assistant runtime with a structured multi-agent development workflow. The product layer focuses on memory, voice, summaries, commitments, and safe action drafting. The orchestration layer coordinates planning, implementation, and review through explicit issue state and handoff rules.</p>
+        <p>The project is designed to show practical AI systems engineering: not just connecting models to tools, but making the resulting system inspectable, reversible, and bounded.</p>
+        <span class="pill good">Structured state</span>
+        <span class="pill good">Review gates</span>
+        <span class="pill info">Local-first design</span>
+        <span class="pill warn">Human approval required</span>
+      </div>
+      <div class="card">
+        <h2>What This Demonstrates</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Capability</th><th>Signal</th></tr>
+            <tr><td>Systems thinking</td><td>Separates product, build machine, canonical state, notification surfaces, and guardrails.</td></tr>
+            <tr><td>AI workflow design</td><td>Uses explicit lanes, sprint artifacts, stop conditions, and handoff contracts.</td></tr>
+            <tr><td>Risk management</td><td>Requires confirmation, privacy controls, and human decisions before sensitive action.</td></tr>
+            <tr><td>Product judgment</td><td>Prioritizes useful assistant behavior over building orchestration for its own sake.</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="card">
+        <h2>Architecture at a Glance</h2>
+        <div class="grid three">
+          <div class="card compact">
+            <h3>Assistant Runtime</h3>
+            <p class="muted">Voice/text ingress, local inference, memory retrieval, response planning, and safe tool mediation.</p>
+          </div>
+          <div class="card compact">
+            <h3>Canonical State</h3>
+            <p class="muted">Issues, pull requests, decisions, labels, and review comments provide durable project memory.</p>
+          </div>
+          <div class="card compact">
+            <h3>Build Orchestrator</h3>
+            <p class="muted">Planning, implementation, and review lanes coordinate through structured handoffs and automated notifications.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="card">
+        <h2>Roadmap</h2>
+        <p class="muted">Click each phase to expand. Phases are sanitized and expressed as portfolio-level milestones, not private operational history.</p>
+        <div class="filter" aria-label="roadmap filters">
+          <button class="active" data-filter="all">All</button>
+          <button data-filter="product">Product</button>
+          <button data-filter="orchestrator">Orchestrator</button>
+          <button data-filter="safety">Safety</button>
+          <button data-filter="future">Future</button>
+        </div>
+        <div class="timeline">
+          <article class="phase open" data-type="product safety">
+            <div class="phase-header" role="button" tabindex="0">
+              <div class="phase-num">Phase 1</div>
+              <div><h3>Assistant Safety Foundation</h3><p class="muted">Build the minimum viable assistant while enforcing memory and mutation boundaries.</p></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="phase-body">
+              <div class="detail-list">
+                <div><strong>Focus</strong><br>Voice adapter, tool boundary, confirmation before meaningful action.</div>
+                <div><strong>Controls</strong><br>No silent long-term memory writes; human approval for high-impact actions.</div>
+                <div><strong>Output</strong><br>Usable assistant behavior with visible safety gates.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="phase open" data-type="orchestrator">
+            <div class="phase-header" role="button" tabindex="0">
+              <div class="phase-num">Phase 2</div>
+              <div><h3>Multi-Agent Orchestration Loop</h3><p class="muted">Formalize planning, implementation, review, and re-entry through structured issue state.</p></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="phase-body">
+              <div class="detail-list">
+                <div><strong>Focus</strong><br>Lane model, handoff files, sprint kickoff, review gates, and re-entry polling.</div>
+                <div><strong>Controls</strong><br>Canonical GitHub state; notification surfaces are not decision surfaces.</div>
+                <div><strong>Output</strong><br>Lower manual coordination burden and clearer accountability between AI tools.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="phase" data-type="product safety">
+            <div class="phase-header" role="button" tabindex="0">
+              <div class="phase-num">Phase 3</div>
+              <div><h3>Memory and Context Expansion</h3><p class="muted">Add retrieval, review queues, and controlled memory writes to make assistance more personal and durable.</p></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="phase-body">
+              <div class="detail-list">
+                <div><strong>Focus</strong><br>Memory retrieval, candidate capture, review workflow, and context fencing.</div>
+                <div><strong>Controls</strong><br>Memory content is reviewed, scoped, and bounded before becoming durable.</div>
+                <div><strong>Output</strong><br>Assistant improves continuity without becoming an uncontrolled recorder.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="phase" data-type="product">
+            <div class="phase-header" role="button" tabindex="0">
+              <div class="phase-num">Phase 4</div>
+              <div><h3>Daily-Use Assistant Workflows</h3><p class="muted">Move from infrastructure to recurring user value: briefings, follow-ups, decision packets, and drafting.</p></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="phase-body">
+              <div class="detail-list">
+                <div><strong>Focus</strong><br>Status summaries, commitments, inbox triage, project briefings, and action drafting.</div>
+                <div><strong>Controls</strong><br>Draft-before-send and approval-before-mutate remain default.</div>
+                <div><strong>Output</strong><br>Useful, low-friction personal assistant capability.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="phase" data-type="future product safety">
+            <div class="phase-header" role="button" tabindex="0">
+              <div class="phase-num">Phase 5</div>
+              <div><h3>Productization Readiness</h3><p class="muted">Prepare the system for repeatable deployment without exposing private configuration or unsafe autonomy.</p></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="phase-body">
+              <div class="detail-list">
+                <div><strong>Focus</strong><br>Installers, appliance-style packaging, documentation, monitoring, and rollback.</div>
+                <div><strong>Controls</strong><br>License review, dependency review, secrets handling, and user-consent flows.</div>
+                <div><strong>Output</strong><br>Turnkey local AI assistant pattern for individuals and small teams.</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="orchestration" class="grid two">
+      <div class="card">
+        <h2>Orchestration Loop</h2>
+        <p>The build workflow treats work as structured state rather than loose chat. Each lane has a role, output, and authority boundary.</p>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Lane</th><th>Role</th><th>Primary Output</th></tr>
+            <tr><td>Product / User</td><td>Defines goals and constraints.</td><td>Decision, priority, approval.</td></tr>
+            <tr><td>Architect</td><td>Converts ambiguity into scoped work.</td><td>Sprint artifact, handoff, verdict.</td></tr>
+            <tr><td>Implementation</td><td>Executes bounded changes.</td><td>PR, test result, result comment.</td></tr>
+            <tr><td>Review</td><td>Checks correctness and safety.</td><td>Approve, request changes, risk note.</td></tr>
+            <tr><td>Notification</td><td>Announces state changes.</td><td>Status update, blocker alert.</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Coordination Skills</h2>
+        <p>Sanitized public examples are included to show how the project operationalizes prompt discipline.</p>
+        <ul>
+          <li><strong>Sprint planning and kickoff:</strong> formal start state for multi-agent sprints.</li>
+          <li><strong>Code handoff:</strong> implementation instructions with stop conditions and acceptance criteria.</li>
+          <li><strong>Re-entry poll:</strong> architect lane returns after downstream work completes.</li>
+        </ul>
+        <div class="callout safe">The design intent is bounded autonomy: agents can act within scoped lanes, but sensitive decisions remain explicit.</div>
+      </div>
+    </section>
+
+    <section id="guardrails">
+      <div class="card">
+        <h2>Guardrails and Approval Boundaries</h2>
+        <div class="grid three">
+          <div class="card compact"><h3>Memory</h3><p class="muted">No silent durable memory writes. Candidate memories should be reviewable and scoped.</p></div>
+          <div class="card compact"><h3>External Action</h3><p class="muted">Meaningful tool calls require confirmation, especially where physical-world effects exist.</p></div>
+          <div class="card compact"><h3>Secrets</h3><p class="muted">Public artifacts exclude tokens, credentials, local paths, and private runtime configuration.</p></div>
+          <div class="card compact"><h3>Scope</h3><p class="muted">Stop conditions prevent agents from expanding work without explicit approval.</p></div>
+          <div class="card compact"><h3>Reviews</h3><p class="muted">High-risk changes route through independent review rather than single-agent implementation.</p></div>
+          <div class="card compact"><h3>Rollback</h3><p class="muted">Cutovers should include fallback flags, burn-in, and explicit completion criteria.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="risks" class="grid two">
+      <div class="card">
+        <h2>Key Risks</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Risk</th><th>Mitigation</th></tr>
+            <tr><td>Orchestrator becomes the product</td><td>Mission guardrail: orchestration work must unblock assistant capability or reduce manual handoffs.</td></tr>
+            <tr><td>Agent drift</td><td>Canonical issue state, handoff files, stop conditions, and review lanes.</td></tr>
+            <tr><td>Unsafe automation</td><td>Confirmation before mutation and human approval for high-impact actions.</td></tr>
+            <tr><td>Private data leakage</td><td>Sanitized public artifacts, no secrets, and explicit publication rules.</td></tr>
+            <tr><td>Deployment mismatch</td><td>Smoke tests, status checks, rollback plans, and staged cutovers.</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Operating Principles</h2>
+        <p class="callout">The hardest part is not adding more AI. The hardest part is keeping the system accountable as autonomy increases.</p>
+        <ul>
+          <li>Prefer small, testable gates over large ambiguous launches.</li>
+          <li>Use issues and PRs as durable memory.</li>
+          <li>Treat chat as discussion, not source of truth.</li>
+          <li>Make uncertainty visible.</li>
+          <li>Do not automate what cannot yet be reviewed.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="card">
+        <h2>Portfolio Value</h2>
+        <p>This roadmap is included to show the project as an executive systems artifact: a product vision, technical architecture, governance model, and delivery plan in one inspectable surface.</p>
+        <div class="grid three">
+          <div class="card compact"><h3>Product Strategy</h3><p class="muted">Turns a broad assistant concept into staged, testable value.</p></div>
+          <div class="card compact"><h3>Operational Design</h3><p class="muted">Shows how multiple AI tools can coordinate without hidden context.</p></div>
+          <div class="card compact"><h3>Risk Governance</h3><p class="muted">Builds in approval boundaries, review gates, and publication hygiene.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Sanitized public portfolio artifact. Private operational details, credentials, local paths, and household-specific context are intentionally excluded.
+    </div>
+  </div>
+
+  <script>
+    const phases = Array.from(document.querySelectorAll('.phase'));
+    phases.forEach(phase => {
+      const header = phase.querySelector('.phase-header');
+      const toggle = () => phase.classList.toggle('open');
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle();
+        }
+      });
+    });
+
+    const buttons = Array.from(document.querySelectorAll('.filter button'));
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+        const filter = button.dataset.filter;
+        phases.forEach(phase => {
+          const types = phase.dataset.type.split(' ');
+          phase.style.display = filter === 'all' || types.includes(filter) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
