@@ -141,6 +141,7 @@ Excluded from this public version:
 |---|---|
 | `docs/architecture-overview.md` | High-level system architecture |
 | `docs/orchestration-model.md` | Multi-agent workflow and lane model |
+| `docs/coordination-skills/` | Sanitized coordination-skill examples for sprint kickoff, handoff discipline, and architect re-entry |
 | `docs/security-guardrails.md` | Safety, privacy, and approval boundaries |
 | `docs/roadmap.md` | Public roadmap and staged build plan |
 | `docs/portfolio-notes.md` | Notes on what this public copy represents |
