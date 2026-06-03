@@ -32,6 +32,8 @@ Key areas represented:
 - Discord/GitHub relay concepts
 - Skill registry and structured prompt tooling
 - Roadmap-driven development
+- Voice and Home Assistant integration strategy
+- Hermes-based agent runtime convergence
 
 ## Architecture overview
 
@@ -40,11 +42,14 @@ HAL is designed around a few core surfaces:
 | Layer | Purpose |
 |---|---|
 | Assistant layer | User-facing AI behavior, memory, planning, summaries, and drafting |
+| Hermes runtime layer | Candidate unified agent runtime for voice, tools, memory, delegation, and scheduled work |
 | Orchestrator layer | Coordinates AI work across planning, coding, review, and handoff lanes |
 | Canonical state | GitHub issues, pull requests, labels, and tracked decisions |
 | Notification surface | Status updates and escalation messages |
 | Local services | Self-hosted model gateways, automation services, and household integrations |
 | Guardrails | Explicit boundaries for privacy, memory, mutation, and external communication |
+
+The current private project has shifted from building every assistant subsystem bespoke toward configuring maintained agent-runtime capabilities where appropriate, then supplying HAL-specific policy, safety hooks, validation, and approval boundaries.
 
 The two diagrams below show the split: the runtime (the product) and the build orchestration (the machine that builds it).
 
@@ -53,44 +58,43 @@ The two diagrams below show the split: the runtime (the product) and the build o
 ```mermaid
 graph LR
     subgraph Surfaces
-        V[Voice<br/>Home Assistant]
+        V[Voice / Home Assistant]
         D[Discord]
         T[Telegram]
         Term[Terminal]
+        UI[Dashboard]
     end
 
-    V -->|OpenAI-compatible request| ADP
+    V -->|OpenAI-compatible request| Front[Voice front agent / safety broker]
+    D --> Hermes[Hermes agent runtime]
+    T --> Hermes
+    Term --> Hermes
+    UI --> State[Assistant state and review surfaces]
 
-    subgraph Server["Server · Linux NUC"]
-        ADP[hal-voice-adapter :4003<br/>ingress · tool schema<br/>safety · HA mutation boundary]
-        LLM[LiteLLM :4000<br/>model gateway]
-        ADP --> LLM
+    subgraph Runtime[Local runtime]
+        Front --> Hooks[Policy hooks / toolset lockdown]
+        Hermes --> Hooks
+        Hooks --> HA[Home Assistant tools]
+        Hooks --> Mem[Reviewed memory / session context]
+        Hooks --> Delegate[Restricted delegated agents]
     end
 
-    subgraph Mac["MacBook Pro M1 Max"]
-        OLL[Ollama<br/>local model]
-    end
-
-    LLM --> OLL
-    ADP -.executes tools.-> HASS[Home Assistant<br/>lights · locks · climate]
-
-    D --> HER[Hermes CLI agent]
-    T --> HER
-    Term --> HER
+    HA --> Home[Home services]
+    Delegate -.draft / stage only.-> Review[Human review and validation]
 ```
 
-### Build: four AI agents coordinated through a GitHub state machine
+### Build: AI agents coordinated through a GitHub state machine
 
 ```mermaid
 graph TD
-    Start[ChatGPT / Michael<br/>launch conversation] --> Issue[Structured GitHub<br/>sprint issue]
+    Start[Michael / ChatGPT<br/>launch conversation] --> Issue[Structured GitHub<br/>sprint issue]
     Issue -->|lane:cowork| Cowork[Cowork<br/>architect · plan · review]
     Cowork -->|posts result · flips label| Router{Next lane?}
-    Router -->|lane:code| Code[Claude Code<br/>headless executor]
+    Router -->|lane:code| Code[Claude Code<br/>bounded executor]
     Router -->|lane:codex| Codex[Codex<br/>audit / review]
     Code -->|posts result · flips label| Router
     Codex -->|posts result · flips label| Router
-    Router -->|sprint:complete · paused · blocked| Done[Discord notification<br/>final state]
+    Router -->|sprint:complete · paused · blocked| Done[Operator notification<br/>final state]
 ```
 
 ## Design principles
@@ -101,13 +105,16 @@ graph TD
 - GitHub is canonical project state
 - Chat and notification surfaces are not source of truth
 - Agent autonomy must be bounded by stop conditions, usage limits, and review gates
+- Runtime tool access must be locked by surface and risk class
 - Reliability beats novelty
 - Public portfolio code excludes credentials, local paths, operational secrets, and household-specific details
 
 ## Representative capabilities
 
-Planned or partially implemented capabilities include:
+Planned, partially implemented, or actively prototyped capabilities include:
 
+- Voice-driven Home Assistant interaction with explicit safety boundaries
+- Hermes-based agent runtime convergence for voice, memory, tools, and delegation
 - Daily and project status briefings
 - Commitment and follow-up tracking
 - Decision compression from long GitHub threads
@@ -115,8 +122,22 @@ Planned or partially implemented capabilities include:
 - Architect/code/review lane handoffs
 - Skill registry and output evaluation harnesses
 - Local assistant memory review queue
-- Home Assistant and voice interface planning
+- Home Assistant lighting/group/scene automation planning
+- Model bakeoff process for fast front-desk voice routing
+- Multi-model execution and resource arbitration planning
+- Rollback runbooks for runtime cutovers
 - Media and home-lab assistant extensions
+
+## Recent public-safe update
+
+Recent private work has focused on the transition from an adapter-heavy voice architecture to a probe-gated Hermes convergence path:
+
+- Revisited earlier voice architecture decisions after Hermes added relevant native capabilities.
+- Defined a probe-gated path for using Hermes as the voice/runtime body while preserving safety invariants.
+- Added a layered-agent direction: a fast no-thinking front agent for voice and off-path specialist agents for deeper work.
+- Tightened API-server ingress safety so ambient or garbled inputs are filtered before reaching the model.
+- Added a model bakeoff plan to select the best local front-desk voice model.
+- Added public-safe roadmap language around safe staged cutover, rollback, and resource arbitration.
 
 ## Why this matters
 
@@ -145,10 +166,10 @@ Excluded from this public version:
 | `docs/security-guardrails.md` | Safety, privacy, and approval boundaries |
 | `docs/roadmap.md` | Public roadmap and staged build plan |
 | `docs/portfolio-notes.md` | Notes on what this public copy represents |
-| `docs/selected-engineering-decisions.md` | The strongest decisions + the safety subsystem, for a quick read |
+| `docs/selected-engineering-decisions.md` | The strongest decisions and safety/runtime architecture choices |
 | `docs/case-study-orchestrator.md` | Why the build system moved off GUI automation |
-| `decisions/` | Full Architecture Decision Record set (ADR-001 … ADR-008) |
-| `machines/server/hal-voice-adapter/confirm/` | The confirm-before-mutate safety subsystem (code + tests) |
+| `decisions/` | Public-safe Architecture Decision Record set |
+| `machines/server/hal-voice-adapter/confirm/` | Confirm-before-mutate safety subsystem snapshot |
 
 ## License
 
